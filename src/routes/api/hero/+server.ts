@@ -4,9 +4,9 @@ export const GET = async ({ query }) => {
   try {
     const data = await heroes.find({}).toArray();
     console.log(data)
-    return new Response(JSON.stringify(data), { status: 200 })
+    return new Response(JSON.stringify({data: data, message: 'Success'}), { status: 200 })
   } catch (error) {
-    console.log(error);
+    return new Response(JSON.stringify({data: [], message: 'Something Went Wrong'}), { status: 404})
   }
 }
 
