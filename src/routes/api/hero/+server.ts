@@ -1,26 +1,13 @@
-import { heroes } from "$db/heroes";
-
-export const GET = async ({ query }) => {
-  try {
-    const data = await heroes.find({}).toArray();
-    console.log(data)
-    return new Response(JSON.stringify({data: data, message: 'Success'}), { status: 200 })
-  } catch (error) {
-    return new Response(JSON.stringify({data: [], message: 'Something Went Wrong'}), { status: 404})
-  }
-}
+import { heroes } from '$db/heroes';
 
 
-// export const POST = async ({ request }) => {
-//   const body = await request.json()
-//   const authHeader = request.headers.get('Authorization')
+export const GET = async () => {
+	return new Response(JSON.stringify('api/hero/:id'), { status: 200 });
+};
 
-
-//   if (authHeader !== 'Myauthheader') {
-//     return new Response(JSON.stringify({message: 'Invalid credentials'}), { status: 401 })
-//   }
-
-//   console.log(body)
-
-//   return new Response(JSON.stringify({message: "Success"}), { status: 201 })
-// }
+export const POST = async ({ request }) => {
+	const body = await request.json();
+	console.log(body);
+    heroes.insertOne(body)
+	return new Response(JSON.stringify({ message: 'Success' }), { status: 201 });
+};
