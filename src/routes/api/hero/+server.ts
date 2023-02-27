@@ -1,30 +1,8 @@
 import { heroes } from "$db/heroes";
 
-let data
-
 export const GET = async ({ query }) => {
-  if (query){
-    heroes.createIndex({ "$**": "text" })
-    data = await heroes.find({
-      $or: [
-        { name: { $regex: new RegExp(query, "i") } },
-        { class: { $regex: new RegExp(query, "i") } },
-        { element: { $regex: new RegExp(query, "i") } },
-        { party_buff: { $regex: new RegExp(query, "i") } },
-        { equipment: { $regex: new RegExp(query, "i") } },
-        { "normal_attack.description": { $regex: new RegExp(query, "i") } },
-        { "chain_skill.description": { $regex: new RegExp(query, "i") } },
-        { "special_ability.description": { $regex: new RegExp(query, "i") } },
-
-
-        // Add more fields as needed
-      ]
-    }).toArray();
-  }else{
-    data = await heroes.find({}).toArray();
-  }
   try {
-    
+    const data = await heroes.find({}).toArray();
     console.log(data)
     return new Response(JSON.stringify(data), { status: 200 })
   } catch (error) {
