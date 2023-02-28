@@ -1,11 +1,10 @@
 import { heroes } from '$db/heroes';
 
-
 export const GET = async () => {
 	return new Response(JSON.stringify('api/hero/:id'), { status: 200 });
 };
 
-export const POST = async ({ request }) => {
+export const POST = async ({ request }: {request: Request}) => {
 	const body = await request.json();
 	console.log(body);
     heroes.insertOne(body)

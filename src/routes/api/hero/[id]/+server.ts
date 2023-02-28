@@ -1,7 +1,7 @@
 import { heroes } from '$db/heroes';
 import { ObjectId } from 'mongodb';
 
-export const GET = async ({ params }) => {
+export const GET = async ({ params }: {params: {id: string}}) => {
 	console.log(params.id);
 	try {
 		const data = await heroes.findOne({ _id: new ObjectId(params.id) });
@@ -19,7 +19,7 @@ export const GET = async ({ params }) => {
 	}
 };
 
-export const PUT = async ({ params, request }) => {
+export const PUT = async ({ params, request } : {params: {id: string}, request: Request }) => {
 	const body = await request.json();
 	console.log(body);
 	try {
@@ -30,7 +30,7 @@ export const PUT = async ({ params, request }) => {
 	}
 };
 
-export const DELETE = async ({ params }) => {
+export const DELETE = async ({ params }: {params: {id: string} }) => {
 	try {
 		heroes.deleteOne({ _id: new ObjectId(params.id) });
 		return new Response(JSON.stringify({ message: 'Accepted' }), { status: 202 });

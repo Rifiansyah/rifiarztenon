@@ -3,7 +3,7 @@ import { heroes } from "$db/heroes";
 // Create text index outside of the `get` function
 heroes.createIndex({ "$**": "text" })
 
-export const GET = async ({ params }) => {
+export const GET = async ({ params }: {params: {query: string}}) => {
   try {
     const data = await heroes.find({
       $or: [

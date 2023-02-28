@@ -1,5 +1,9 @@
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<script>
+	import Title from "$lib/components/Title.svelte";
+</script>
 
+<Title title="Main"/>
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center">
 		<h2 class="font-bold">Welcome to Skeleton.</h2>
