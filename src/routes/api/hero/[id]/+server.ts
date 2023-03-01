@@ -21,6 +21,11 @@ export const GET = async ({ params }: {params: {id: string}}) => {
 
 export const PUT = async ({ params, request } : {params: {id: string}, request: Request }) => {
 	const body = await request.json();
+	const authHeader = request.headers.get('Authorization')
+	if (authHeader !== import.meta.env.VITE_AUTH_HEADER) {
+		return new Response(JSON.stringify({message: 'Invalid credentials'}), { status: 401 })
+	}
+
 	console.log(body);
 	try {
 		heroes.updateOne({ _id: new ObjectId(params.id) }, { $set: body });
@@ -30,7 +35,11 @@ export const PUT = async ({ params, request } : {params: {id: string}, request: 
 	}
 };
 
-export const DELETE = async ({ params }: {params: {id: string} }) => {
+export const DELETE = async ({ params, request }: {params: {id: string}, request: Request }) => {
+	const authHeader = request.headers.get('Authorization')
+	if (authHeader !== import.meta.env.VITE_AUTH_HEADER) {
+		return new Response(JSON.stringify({message: 'Invalid credentials'}), { status: 401 })
+	}
 	try {
 		heroes.deleteOne({ _id: new ObjectId(params.id) });
 		return new Response(JSON.stringify({ message: 'Accepted' }), { status: 202 });
