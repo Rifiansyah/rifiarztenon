@@ -21,7 +21,7 @@ export const GET = async ({ params }: {params: {query: string}}) => {
       ]
     }).toArray();
     
-    console.log(data)
+    // console.log(data)
     return new Response(JSON.stringify({data: data, message: 'Success'}), { status: 200 })
   } catch (error) {
     return new Response(JSON.stringify({data: [], message: 'Something Went Wrong'}), { status: 404})

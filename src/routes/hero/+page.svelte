@@ -1,79 +1,107 @@
 <script lang="ts">
-	import { Paginator, Avatar } from '@skeletonlabs/skeleton';
-	import Title from '$lib/components/Title.svelte';
-	import type { Hero } from '$lib/types'
-	import { IconEdit } from '@tabler/icons-svelte';
-	import { Shadow } from 'svelte-loading-spinners';
+	import HeroIcon from "$lib/components/Hero/HeroIcon.svelte";
 
-	
-	let asc = true;
+	import { Paginator, Avatar } from '@skeletonlabs/skeleton';
+	import type { Hero } from '$lib/types';
+	import { IconEdit, IconUserSearch } from '@tabler/icons-svelte';
+	import { writable, get } from 'svelte/store';
+	import Title from '$lib/components/Title.svelte';
+	import Loading from '$lib/components/Loading.svelte';
+	import { element } from 'svelte/internal';
+
 	let source: Hero[] = [];
-	let page = {
-		offset: 0,
-		limit: 5,
-		size: source.length,
-		amounts: [1, 2, 5, 10]
-	};
+	const hero = writable([]);
 
 	async function getHeroes() {
 		const response = await fetch(`api/heroes/`);
 		const result = await response.json();
+		hero.set(result.data);
+		page.size = result.data.length;
 		source = result.data;
-		page.size = source.length;
 		// console.log(source);
 	}
-
-	function onPageChange(e: CustomEvent): void {
-		asc = true
-		// console.log('event:page', e.detail);
-	}
-
-	function onAmountChange(e: CustomEvent): void {
-		asc = true
-		// console.log('event:amount', e.detail);
-	}
+	let page = {
+		offset: 0,
+		limit: 5,
+		size: 0,
+		amounts: [1, 2, 5, 10]
+	};
 
 	$: paginatedSource = source.slice(
 		page.offset * page.limit, // start
 		page.offset * page.limit + page.limit // end
 	);
+
+	let asc = true;
+	function onPageChange(e: CustomEvent): void {
+		asc = true;
+		// console.log('event:page', e.detail);
+	}
+
+	function onAmountChange(e: CustomEvent): void {
+		asc = true;
+		// console.log('event:amount', e.detail);
+	}
+
+	// SEARCH
+	let searchTerm = '';
+	const search = async () => {
+		if (searchTerm) {
+			source = get(hero);
+			source = source.filter((hero: Hero) =>
+				hero.name.toLowerCase().includes(searchTerm.toLowerCase())
+			);
+			page.size = source.length;
+		} else {
+			source = [...$hero];
+			page.size = source.length;
+		}
+	};
 </script>
 
 <Title title="Heroes" />
+{#await getHeroes()}
+	<Loading />
+{:then}
+	<div class="table-container grid place-content-center">
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-4">
+			<div class="input-group-shim"><IconUserSearch /></div>
+			<input type="search" placeholder="Search Name" bind:value={searchTerm} />
+			<button class="variant-filled" on:click={search}>Submit</button>
+		</div>
 
-<div class="table-container grid place-content-center">
-	<table class="table table-hover my-4">
-		{#await getHeroes()}
-			<Shadow size="60" unit="px" duration="1s" />
-		{:then}
+		<table class="table table-hover table-cell-fit my-4">
 			<thead>
 				<tr>
-					<th />
-					<th class="table-sort-{asc ? 'asc' : 'dsc'}" on:click={() => {(paginatedSource = paginatedSource.reverse()), (asc = !asc);}}>
-						Name
-					</th>
-					<th>Party Buff</th>
-					<th>Element</th>
+					<th
+						class="table-sort-{asc ? 'asc' : 'dsc'}"
+						on:click={() => {
+							(paginatedSource = paginatedSource.reverse()), (asc = !asc);
+						}}>Icon</th
+					>
+					<th>Name</th>
+					<th>Class</th>
 					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each paginatedSource as hero}
 					<tr>
-						<td><Avatar src={hero.image_urls.icon} initials={hero.name} /></td>
-						<td>{hero.name}</td>
-						<td>{hero.party_buff}</td>
-						<td>{hero.element}</td>
-						<td><IconEdit/></td>
+						<td>
+							<HeroIcon element = {hero.element} icon={hero.image_urls.icon} name={hero.name} />
+						</td>
+						<td class="truncate">{hero.name.split(" ").pop()}</td>
+						<td>{hero.class}</td>
+						<td><a class="btn" href="/hero/{hero.name}"><IconEdit /></a></td>
 					</tr>
 				{/each}
 			</tbody>
-		{/await}
-	</table>
-</div>
-<Paginator
-	bind:settings={page}
-	on:page={onPageChange}
-	on:amount={onAmountChange}
-	justify="justify-around"
-/>
+		</table>
+	</div>
+	<Paginator
+		bind:settings={page}
+		on:page={onPageChange}
+		on:amount={onAmountChange}
+		justify="justify-around"
+	/>
+{/await}
