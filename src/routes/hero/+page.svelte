@@ -1,13 +1,12 @@
 <script lang="ts">
-	import HeroIcon from "$lib/components/Hero/HeroIcon.svelte";
+	import HeroIcon from '$lib/components/Hero/HeroIcon.svelte';
 
 	import { Paginator, Avatar } from '@skeletonlabs/skeleton';
 	import type { Hero } from '$lib/types';
-	import { IconEdit, IconUserSearch } from '@tabler/icons-svelte';
+	import { IconId, IconUserSearch } from '@tabler/icons-svelte';
 	import { writable, get } from 'svelte/store';
 	import Title from '$lib/components/Title.svelte';
 	import Loading from '$lib/components/Loading.svelte';
-	import { element } from 'svelte/internal';
 
 	let source: Hero[] = [];
 	const hero = writable([]);
@@ -51,6 +50,7 @@
 			source = source.filter((hero: Hero) =>
 				hero.name.toLowerCase().includes(searchTerm.toLowerCase())
 			);
+			page.offset = 0;
 			page.size = source.length;
 		} else {
 			source = [...$hero];
@@ -66,7 +66,7 @@
 	<div class="table-container grid place-content-center">
 		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] mt-4">
 			<div class="input-group-shim"><IconUserSearch /></div>
-			<input type="search" placeholder="Search Name" bind:value={searchTerm} />
+			<input type="search" placeholder="Search Name" bind:value={searchTerm} on:keydown={(e)=>{if (e.key === 'Enter') search()}}/>
 			<button class="variant-filled" on:click={search}>Submit</button>
 		</div>
 
@@ -88,20 +88,20 @@
 				{#each paginatedSource as hero}
 					<tr>
 						<td>
-							<HeroIcon element = {hero.element} icon={hero.image_urls.icon} name={hero.name} />
+							<HeroIcon element={hero.element} icon={hero.image_urls.icon} name={hero.name} />
 						</td>
-						<td class="truncate">{hero.name.split(" ").pop()}</td>
+						<td class="truncate">{hero.name.split(' ').pop()}</td>
 						<td>{hero.class}</td>
-						<td><a class="btn" href="/hero/{hero.name}"><IconEdit /></a></td>
+						<td><a class="btn" href="/hero/{hero.name}"><IconId /></a></td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
+		<Paginator
+			bind:settings={page}
+			on:page={onPageChange}
+			on:amount={onAmountChange}
+			justify="justify-around"
+		/>
 	</div>
-	<Paginator
-		bind:settings={page}
-		on:page={onPageChange}
-		on:amount={onAmountChange}
-		justify="justify-around"
-	/>
 {/await}
