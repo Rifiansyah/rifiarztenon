@@ -1,4 +1,8 @@
 export interface Hero {
+    _id: string;
+    publishedAt: string;
+    updatedAt: string;
+    createdAt: string;
     name: string;
     party_buff: string;
     class: string;
