@@ -6,7 +6,7 @@
 <Title title="Home"/>
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center">
-		<h2 class="font-bold">Welcome to Guardita.</h2>
+		<h2 class="font-bold">Welcome to Mini Wiki Guardian Tales.</h2>
 		<!-- Animated Logo -->
 		<a href="/hero" class="font-mono text-xl btn variant-ghost-secondary ">Get Started</a>
 	</div>
