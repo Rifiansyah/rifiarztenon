@@ -11,7 +11,7 @@
 	<svelte:fragment slot="header">
 		<AppBar gridColumns="grid-cols-3" slotTrail="place-content-end">
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase"><a href="/" class="btn">Guardita</a></strong>
+				<strong class="text-xl uppercase"><a href="/" class="btn">RifiArztenon</a></strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<LightSwitch class="mr-4" />
